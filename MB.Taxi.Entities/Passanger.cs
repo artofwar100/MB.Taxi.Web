@@ -9,6 +9,10 @@ namespace Entites
 {
     public class Passanger
     {
+        public Passanger()
+        {
+            Booking = new List<Booking>();
+        }
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }

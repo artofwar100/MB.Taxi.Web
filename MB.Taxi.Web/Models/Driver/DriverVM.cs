@@ -1,18 +1,19 @@
-﻿using System;
+﻿using MB.Taxi.Web.Models.Booking;
+using MB.Taxi.Web.Models.Car;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using utilities.Enum;
 
-namespace Entites
+namespace MB.Taxi.Web.Models.Driver
 {
-    public class Driver
+    public class DriverVM
     {
-        public Driver()
+        public DriverVM()
         {
-            Bookings = new List<Booking>();
-            Cars = new List<Car>();
+            Bookings = new List<BookingVM>();
+            Cars = new List<CarVM>();
         }
         public int Id { get; set; }
         public string Name { get; set; }
@@ -20,7 +21,7 @@ namespace Entites
         public int PhonoNumber { get; set; }
         public int Rating { get; set; }
         public Gender Gender { get; set; }
-        public List<Booking> Bookings { get; set; }
-        public List<Car> Cars { get; set; }
+        public List<BookingVM> Bookings { get; set; }
+        public List<CarVM> Cars { get; set; }
     }
 }

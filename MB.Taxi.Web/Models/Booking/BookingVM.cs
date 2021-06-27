@@ -1,16 +1,16 @@
-﻿using System;
+﻿using MB.Taxi.Web.Models.Passanger;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Entites
+namespace MB.Taxi.Web.Models.Booking
 {
-    public class Booking
+    public class BookingVM
     {
-        public Booking()
+        public BookingVM()
         {
-            Passangers = new List<Passanger>();
+            Passangers = new List<PassangerVM>();
         }
         public int Id { get; set; }
         public DateTime PickUpTime { get; set; }
@@ -19,6 +19,6 @@ namespace Entites
         public string Price { get; set; }
         public bool IsPaid { get; set; }
         public DateTime PaymentDate { get; set; }
-        public List<Passanger> Passangers { get; set; }
+        public List<PassangerVM> Passangers { get; set; }
     }
 }
