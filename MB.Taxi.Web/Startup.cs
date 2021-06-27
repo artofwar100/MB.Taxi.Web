@@ -1,4 +1,5 @@
 using MB.Taxi.Web.Data;
+using MB.Taxi.Web.Helper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,7 +26,7 @@ namespace MB.Taxi.Web
         public IConfiguration Configuration { get; }       
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddTransient<ILookUpService, LookUpService>();
+            services.AddTransient<ILookUpService, LookUpService>();
 
             services.AddAutoMapper(typeof(Startup));
 

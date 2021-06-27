@@ -13,6 +13,7 @@ namespace MB.Taxi.Web.AutoMapper
         public DriverProfile()
         {
             CreateMap<Driver, DriverVM>().ReverseMap();
+            CreateMap<Driver, DriverCreateEditVM>().ReverseMap();
         }
     }
 }

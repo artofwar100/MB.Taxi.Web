@@ -9,6 +9,7 @@ using Entites;
 using MB.Taxi.Web.Data;
 using AutoMapper;
 using MB.Taxi.Web.Models.Driver;
+using MB.Taxi.Web.Helper;
 
 namespace MB.Taxi.Web.Controllers
 {
@@ -17,15 +18,45 @@ namespace MB.Taxi.Web.Controllers
         #region Data And Const
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILookUpService _lookUpService;
 
-        public DriversController(ApplicationDbContext context, IMapper mapper)
+        public DriversController(ApplicationDbContext context
+                                            , IMapper mapper
+                                            , ILookUpService lookUpService)
         {
             _context = context;
             _mapper = mapper;
-        } 
+            _lookUpService = lookUpService;
+        }
         #endregion
 
         #region Public Actions
+        public async Task<IActionResult> AddCar(int? Id) 
+        {
+            var driver = await _context
+                                .Drivers
+                                .Where(x => x.Id == Id)
+                                .SingleOrDefaultAsync();
+
+            var driverVM = _mapper.Map<Driver, DriverCreateEditVM>(driver);
+
+            driverVM.GetCarList = await _lookUpService.GetCarsList();
+
+            return View(driverVM);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCarSave(int? Id, int CarVMid) 
+        {
+            var driver = await _context.Drivers.FindAsync(Id);
+            var car = await _context.Cars.FindAsync(CarVMid);
+            driver.Cars.Add(car);
+
+            _context.Update(driver);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
         public async Task<IActionResult> Index()
         {
             var driver = await _context
