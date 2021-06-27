@@ -97,7 +97,7 @@ namespace MB.Taxi.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var driver = _mapper.Map<DriverVM,Driver>(driverVM);
+                var driver = _mapper.Map<DriverVM, Driver>(driverVM);
 
                 _context.Add(driver);
                 await _context.SaveChangesAsync();

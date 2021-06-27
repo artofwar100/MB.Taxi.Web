@@ -7,5 +7,7 @@ namespace MB.Taxi.Web.Helper
     {
         public Task<SelectList> GetCarsList();
         public Task<SelectList> GetPassangersList();
+        public Task<SelectList> GetBookingList();
+        public Task<SelectList> GetDriversList();
     }
 }

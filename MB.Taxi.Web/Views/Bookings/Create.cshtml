@@ -38,14 +38,19 @@
                 </label>
             </div>
             <div class="form-group">
-                <label asp-for="PaymentDate" class="control-label"></label>
-                <input asp-for="PaymentDate" class="form-control" />
-                <span asp-validation-for="PaymentDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="PassangerIds" class="control-label"></label>
                 <select multiple asp-for="PassangerIds" asp-items="@Model.GetPassangersList" class="form-control"></select>
                 <span asp-validation-for="PassangerIds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DriverIds" class="control-label"></label>
+                <select asp-for="DriverIds" asp-items="@Model.GetDriverList" class="form-control"></select>
+                <span asp-validation-for="DriverIds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CarIds" class="control-label"></label>
+                <select asp-for="CarIds" asp-items="@Model.GetCarList" class="form-control"></select>
+                <span asp-validation-for="CarIds" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

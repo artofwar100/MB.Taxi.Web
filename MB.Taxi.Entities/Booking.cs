@@ -20,5 +20,7 @@ namespace Entites
         public bool IsPaid { get; set; }
         public DateTime PaymentDate { get; set; }
         public List<Passanger> Passangers { get; set; }
+        public Driver Driver { get; set; }
+        public Car Car { get; set; }
     }
 }

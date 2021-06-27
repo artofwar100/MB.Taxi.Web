@@ -63,9 +63,11 @@ namespace MB.Taxi.Web.Controllers
         {
             var bookingCreateEditVM = new BookingCreateEditVM()
             {
-                GetPassangersList = await _lookUpService.GetPassangersList()
+                GetPassangersList = await _lookUpService.GetPassangersList(),
+                GetDriverList = await _lookUpService.GetDriversList(),
+                GetCarList = await _lookUpService.GetCarsList(),
+                PaymentDate = DateTime.Now           
             };
-
             return View(bookingCreateEditVM);
         }
         [HttpPost]
@@ -82,6 +84,11 @@ namespace MB.Taxi.Web.Controllers
                                               .ToListAsync();
                 booking.Passangers.AddRange(passanger);
 
+                var driver = await _context.Drivers.FindAsync(bookingVM.DriverIds);
+                booking.Driver = driver;
+
+                var car = await _context.Cars.FindAsync(bookingVM.CarIds);
+                booking.Car = car;
 
                 _context.Add(booking);
                 await _context.SaveChangesAsync();

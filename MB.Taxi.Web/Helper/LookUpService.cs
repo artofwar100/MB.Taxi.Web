@@ -34,16 +34,46 @@ namespace MB.Taxi.Web.Helper
         {
             var passanger = await _context
                                 .Passangers
-                                .Select(car => new LookUpVM()
+                                .Select(passanger => new LookUpVM()
                                 {
-                                    Id = car.Id,
-                                    Name = car.Name
+                                    Id = passanger.Id,
+                                    Name = passanger.Name
                                 })
                                 .ToListAsync();
 
             var passangerList = new SelectList(passanger, "Id", "Name");
 
             return passangerList;
+        }
+        public async Task<SelectList> GetBookingList()
+        {
+            var booking = await _context
+                                .Bookings
+                                .Select(booking => new LookUpVM()
+                                {
+                                    Id = booking.Id,
+                                    Name = booking.FromAddress
+                                })
+                                .ToListAsync();
+
+            var bookingList = new SelectList(booking, "Id", "Name");
+
+            return bookingList;
+        }
+        public async Task<SelectList> GetDriversList()
+        {
+            var driver = await _context
+                                .Drivers
+                                .Select(driver => new LookUpVM()
+                                {
+                                    Id = driver.Id,
+                                    Name = driver.Name
+                                })
+                                .ToListAsync();
+
+            var driverList = new SelectList(driver, "Id", "Name");
+
+            return driverList;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace MB.Taxi.Web.AutoMapper
         public CarProfile()
         {
             CreateMap<Car, CarVM>().ReverseMap();
+            CreateMap<Car, CarCreateEditVM>().ReverseMap();
         }
     }
 }

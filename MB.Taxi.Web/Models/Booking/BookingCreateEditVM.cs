@@ -19,5 +19,9 @@ namespace MB.Taxi.Web.Models.Booking
         [DisplayName("Passangers")]
         public List<int> PassangerIds { get; set; }
         public SelectList GetPassangersList { get; set; }
+        public int DriverIds { get; set; }
+        public SelectList GetDriverList { get; set; }
+        public int CarIds { get; set; }
+        public SelectList GetCarList { get; set; }
     }
 }

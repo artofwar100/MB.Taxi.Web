@@ -9,6 +9,7 @@ using Entites;
 using MB.Taxi.Web.Data;
 using AutoMapper;
 using MB.Taxi.Web.Models.Car;
+using MB.Taxi.Web.Helper;
 
 namespace MB.Taxi.Web.Controllers
 {
@@ -17,11 +18,13 @@ namespace MB.Taxi.Web.Controllers
         #region Data and Const
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILookUpService _lookUpService;
 
-        public CarsController(ApplicationDbContext context, IMapper mapper)
+        public CarsController(ApplicationDbContext context, IMapper mapper, ILookUpService lookUpService)
         {
             _context = context;
             _mapper = mapper;
+            _lookUpService = lookUpService;
         } 
         #endregion
 
@@ -63,11 +66,11 @@ namespace MB.Taxi.Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CarVM carVM)
+        public async Task<IActionResult> Create(CarCreateEditVM carVM)
         {
             if (ModelState.IsValid)
             {
-                var car = _mapper.Map<CarVM, Car>(carVM);
+                var car = _mapper.Map<CarCreateEditVM, Car>(carVM);
 
                 _context.Add(car);
                 await _context.SaveChangesAsync();
