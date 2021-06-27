@@ -6,5 +6,6 @@ namespace MB.Taxi.Web.Helper
     public interface ILookUpService
     {
         public Task<SelectList> GetCarsList();
+        public Task<SelectList> GetPassangersList();
     }
 }

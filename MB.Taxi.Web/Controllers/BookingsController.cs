@@ -9,6 +9,7 @@ using Entites;
 using MB.Taxi.Web.Data;
 using AutoMapper;
 using MB.Taxi.Web.Models.Booking;
+using MB.Taxi.Web.Helper;
 
 namespace MB.Taxi.Web.Controllers
 {
@@ -17,11 +18,13 @@ namespace MB.Taxi.Web.Controllers
         #region Data and Const
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILookUpService _lookUpService;
 
-        public BookingsController(ApplicationDbContext context, IMapper mapper)
+        public BookingsController(ApplicationDbContext context, IMapper mapper, ILookUpService lookUpService)
         {
             _context = context;
             _mapper = mapper;
+            _lookUpService = lookUpService;
         } 
         #endregion
 
@@ -56,22 +59,37 @@ namespace MB.Taxi.Web.Controllers
 
             return View(bookingVM);
         }
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var bookingCreateEditVM = new BookingCreateEditVM()
+            {
+                GetPassangersList = await _lookUpService.GetPassangersList()
+            };
+
+            return View(bookingCreateEditVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(BookingVM bookingVM)
+        public async Task<IActionResult> Create(BookingCreateEditVM bookingVM)
         {
             if (ModelState.IsValid)
             {
-                var booking = _mapper.Map<BookingVM, Booking>(bookingVM);
+                var booking = _mapper.Map<BookingCreateEditVM, Booking>(bookingVM);
+
+                var passanger = await _context
+                                              .Passangers
+                                              .Where(x => bookingVM.PassangerIds.Contains(x.Id))
+                                              .ToListAsync();
+                booking.Passangers.AddRange(passanger);
+
 
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            bookingVM.GetPassangersList = await _lookUpService.GetPassangersList();
+
             return View(bookingVM);
         }
         public async Task<IActionResult> Edit(int? id)

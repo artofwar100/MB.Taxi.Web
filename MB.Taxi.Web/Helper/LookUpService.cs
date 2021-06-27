@@ -26,9 +26,24 @@ namespace MB.Taxi.Web.Helper
                                 })
                                 .ToListAsync();
 
-            var carList = new SelectList(car,"Id", "Name");
+            var carList = new SelectList(car, "Id", "Name");
 
             return carList;
+        }
+        public async Task<SelectList> GetPassangersList()
+        {
+            var passanger = await _context
+                                .Passangers
+                                .Select(car => new LookUpVM()
+                                {
+                                    Id = car.Id,
+                                    Name = car.Name
+                                })
+                                .ToListAsync();
+
+            var passangerList = new SelectList(passanger, "Id", "Name");
+
+            return passangerList;
         }
     }
 }

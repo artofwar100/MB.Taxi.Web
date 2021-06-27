@@ -13,6 +13,7 @@ namespace MB.Taxi.Web.AutoMapper
         public BookingProfile()
         {
             CreateMap<Booking, BookingVM>().ReverseMap();
+            CreateMap<Booking, BookingCreateEditVM>().ReverseMap();
         }
     }
 }

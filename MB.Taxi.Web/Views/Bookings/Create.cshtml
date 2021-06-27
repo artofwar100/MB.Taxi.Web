@@ -1,4 +1,4 @@
-﻿@model MB.Taxi.Web.Models.Booking.BookingVM
+﻿@model MB.Taxi.Web.Models.Booking.BookingCreateEditVM
 
 @{
     ViewData["Title"] = "Create";
@@ -9,7 +9,7 @@
 <h4>Booking</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -41,6 +41,11 @@
                 <label asp-for="PaymentDate" class="control-label"></label>
                 <input asp-for="PaymentDate" class="form-control" />
                 <span asp-validation-for="PaymentDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PassangerIds" class="control-label"></label>
+                <select multiple asp-for="PassangerIds" asp-items="@Model.GetPassangersList" class="form-control"></select>
+                <span asp-validation-for="PassangerIds" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
