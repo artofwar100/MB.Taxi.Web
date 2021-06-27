@@ -7,25 +7,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Entites;
 using MB.Taxi.Web.Data;
+using AutoMapper;
+using MB.Taxi.Web.Models.Booking;
 
 namespace MB.Taxi.Web.Controllers
 {
     public class BookingsController : Controller
     {
+        #region Data and Const
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public BookingsController(ApplicationDbContext context)
+        public BookingsController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
-        }
+            _mapper = mapper;
+        } 
+        #endregion
 
-        // GET: Bookings
+        #region Public Actions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Bookings.ToListAsync());
-        }
+            var booking = await _context
+                                       .Bookings
+                                       .ToListAsync();
 
-        // GET: Bookings/Details/5
+            var bookingVM = _mapper.Map<List<Booking>, List<BookingVM>>(booking);
+
+            return View(bookingVM);
+        }
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +43,37 @@ namespace MB.Taxi.Web.Controllers
                 return NotFound();
             }
 
-            var booking = await _context.Bookings
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var booking = await _context
+                                        .Bookings
+                                        .Where(x => x.Id == id)
+                                        .FirstOrDefaultAsync();
             if (booking == null)
             {
                 return NotFound();
             }
 
-            return View(booking);
-        }
+            var bookingVM = _mapper.Map<Booking, BookingVM>(booking);
 
-        // GET: Bookings/Create
+            return View(bookingVM);
+        }
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Bookings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PickUpTime,FromAddress,ToAddress,Price,IsPaid,PaymentDate")] Booking booking)
+        public async Task<IActionResult> Create(BookingVM bookingVM)
         {
             if (ModelState.IsValid)
             {
+                var booking = _mapper.Map<BookingVM, Booking>(bookingVM);
+
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(booking);
+            return View(bookingVM);
         }
-
-        // GET: Bookings/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +81,24 @@ namespace MB.Taxi.Web.Controllers
                 return NotFound();
             }
 
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await _context
+                                        .Bookings
+                                        .Where(x => x.Id == id)
+                                        .FirstOrDefaultAsync();
             if (booking == null)
             {
                 return NotFound();
             }
-            return View(booking);
-        }
 
-        // POST: Bookings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+            var bookingVM = _mapper.Map<Booking, BookingVM>(booking);
+
+            return View(bookingVM);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PickUpTime,FromAddress,ToAddress,Price,IsPaid,PaymentDate")] Booking booking)
+        public async Task<IActionResult> Edit(int id, BookingVM bookingVM)
         {
-            if (id != booking.Id)
+            if (id != bookingVM.Id)
             {
                 return NotFound();
             }
@@ -97,12 +107,14 @@ namespace MB.Taxi.Web.Controllers
             {
                 try
                 {
+                    var booking = _mapper.Map<BookingVM,Booking>(bookingVM);
+
                     _context.Update(booking);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookingExists(booking.Id))
+                    if (!BookingExists(bookingVM.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +125,8 @@ namespace MB.Taxi.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(booking);
+            return View(bookingVM);
         }
-
-        // GET: Bookings/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,8 +143,6 @@ namespace MB.Taxi.Web.Controllers
 
             return View(booking);
         }
-
-        // POST: Bookings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -143,11 +151,14 @@ namespace MB.Taxi.Web.Controllers
             _context.Bookings.Remove(booking);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        } 
+        #endregion
 
+        #region Private Actions
         private bool BookingExists(int id)
         {
             return _context.Bookings.Any(e => e.Id == id);
-        }
+        } 
+        #endregion
     }
 }

@@ -7,25 +7,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Entites;
 using MB.Taxi.Web.Data;
+using AutoMapper;
+using MB.Taxi.Web.Models.Car;
 
 namespace MB.Taxi.Web.Controllers
 {
     public class CarsController : Controller
     {
+        #region Data and Const
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CarsController(ApplicationDbContext context)
+        public CarsController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
-        }
+            _mapper = mapper;
+        } 
+        #endregion
 
-        // GET: Cars
+        #region Private Actions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cars.ToListAsync());
-        }
+            var car = await _context
+                                    .Cars
+                                    .ToListAsync();
 
-        // GET: Cars/Details/5
+            var carVM = _mapper.Map<List<Car>, List<CarVM>>(car);
+
+            return View(carVM);
+        }
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +43,38 @@ namespace MB.Taxi.Web.Controllers
                 return NotFound();
             }
 
-            var car = await _context.Cars
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var car = await _context
+                                    .Cars
+                                    .Where(x => x.Id == id)
+                                    .FirstOrDefaultAsync();
+                            
             if (car == null)
             {
                 return NotFound();
             }
 
-            return View(car);
-        }
+            var carVM = _mapper.Map<Car,CarVM>(car);
 
-        // GET: Cars/Create
+            return View(carVM);
+        }
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Cars/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PlateNumber,Name,MakeYear,FuelType,CarType")] Car car)
+        public async Task<IActionResult> Create(CarVM carVM)
         {
             if (ModelState.IsValid)
             {
+                var car = _mapper.Map<CarVM, Car>(carVM);
+
                 _context.Add(car);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(car);
+            return View(carVM);
         }
-
-        // GET: Cars/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +82,24 @@ namespace MB.Taxi.Web.Controllers
                 return NotFound();
             }
 
-            var car = await _context.Cars.FindAsync(id);
+            var car = await _context
+                                     .Cars
+                                     .Where(x => x.Id == id)
+                                     .FirstOrDefaultAsync();
             if (car == null)
             {
                 return NotFound();
             }
-            return View(car);
-        }
 
-        // POST: Cars/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+            var carVM = _mapper.Map<Car,CarVM>(car);
+
+            return View(carVM);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PlateNumber,Name,MakeYear,FuelType,CarType")] Car car)
+        public async Task<IActionResult> Edit(int id, CarVM carVM)
         {
-            if (id != car.Id)
+            if (id != carVM.Id)
             {
                 return NotFound();
             }
@@ -97,12 +108,14 @@ namespace MB.Taxi.Web.Controllers
             {
                 try
                 {
+                    var car = _mapper.Map<CarVM,Car>(carVM);
+
                     _context.Update(car);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CarExists(car.Id))
+                    if (!CarExists(carVM.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +126,9 @@ namespace MB.Taxi.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(car);
-        }
 
-        // GET: Cars/Delete/5
+            return View(carVM);
+        }
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,8 +145,6 @@ namespace MB.Taxi.Web.Controllers
 
             return View(car);
         }
-
-        // POST: Cars/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -143,11 +153,14 @@ namespace MB.Taxi.Web.Controllers
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        } 
+        #endregion
 
+        #region Private Actions
         private bool CarExists(int id)
         {
             return _context.Cars.Any(e => e.Id == id);
-        }
+        } 
+        #endregion
     }
 }

@@ -7,25 +7,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Entites;
 using MB.Taxi.Web.Data;
+using AutoMapper;
+using MB.Taxi.Web.Models.Driver;
 
 namespace MB.Taxi.Web.Controllers
 {
     public class DriversController : Controller
     {
+        #region Data And Const
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public DriversController(ApplicationDbContext context)
+        public DriversController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
-        }
+            _mapper = mapper;
+        } 
+        #endregion
 
-        // GET: Drivers
+        #region Public Actions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Drivers.ToListAsync());
-        }
+            var driver = await _context
+                                       .Drivers
+                                       .ToListAsync();
 
-        // GET: Drivers/Details/5
+            var driverVM = _mapper.Map<List<Driver>, List<DriverVM>>(driver);
+            
+            return View(driverVM);
+        }
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +43,38 @@ namespace MB.Taxi.Web.Controllers
                 return NotFound();
             }
 
-            var driver = await _context.Drivers
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var driver = await _context
+                                      .Drivers
+                                      .Where(x => x.Id == id)
+                                      .FirstOrDefaultAsync();
             if (driver == null)
             {
                 return NotFound();
             }
 
-            return View(driver);
-        }
+            var driverVM = _mapper.Map<Driver, DriverVM>(driver);
 
-        // GET: Drivers/Create
+            return View(driverVM);
+        }
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Drivers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,PhonoNumber,Rating,Gender")] Driver driver)
+        public async Task<IActionResult> Create(DriverVM driverVM)
         {
             if (ModelState.IsValid)
             {
+                var driver = _mapper.Map<DriverVM,Driver>(driverVM);
+
                 _context.Add(driver);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(driver);
+            return View(driverVM);
         }
 
-        // GET: Drivers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +82,24 @@ namespace MB.Taxi.Web.Controllers
                 return NotFound();
             }
 
-            var driver = await _context.Drivers.FindAsync(id);
+            var driver = await _context
+                                       .Drivers
+                                       .Where(x => x.Id == id)
+                                       .FirstOrDefaultAsync();
             if (driver == null)
             {
                 return NotFound();
             }
-            return View(driver);
-        }
 
-        // POST: Drivers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+            var driverVM = _mapper.Map<Driver, DriverVM>(driver);
+
+            return View(driverVM);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,PhonoNumber,Rating,Gender")] Driver driver)
+        public async Task<IActionResult> Edit(int id, DriverVM driverVM)
         {
-            if (id != driver.Id)
+            if (id != driverVM.Id)
             {
                 return NotFound();
             }
@@ -97,12 +108,14 @@ namespace MB.Taxi.Web.Controllers
             {
                 try
                 {
+                    var driver = _mapper.Map<DriverVM,Driver>(driverVM);
+
                     _context.Update(driver);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DriverExists(driver.Id))
+                    if (!DriverExists(driverVM.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +126,8 @@ namespace MB.Taxi.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(driver);
+            return View(driverVM);
         }
-
-        // GET: Drivers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,8 +144,6 @@ namespace MB.Taxi.Web.Controllers
 
             return View(driver);
         }
-
-        // POST: Drivers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -143,11 +152,14 @@ namespace MB.Taxi.Web.Controllers
             _context.Drivers.Remove(driver);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+        } 
+        #endregion
 
+        #region Private Actions
         private bool DriverExists(int id)
         {
             return _context.Drivers.Any(e => e.Id == id);
-        }
+        } 
+        #endregion
     }
 }
