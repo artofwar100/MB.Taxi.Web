@@ -15,4 +15,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MB.Taxi.Entities\MB.Taxi.Entities.csproj" />
+    <ProjectReference Include="..\MB.Taxi.Utils\MB.Taxi.Utils.csproj" />
+  </ItemGroup>
+
 </Project>

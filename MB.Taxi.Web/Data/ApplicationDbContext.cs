@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Entites;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,9 @@ namespace MB.Taxi.Web.Data
             : base(options)
         {
         }
+        public DbSet<Car> Cars { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
+        public DbSet<Passanger> Passangers { get; set; }
     }
 }
