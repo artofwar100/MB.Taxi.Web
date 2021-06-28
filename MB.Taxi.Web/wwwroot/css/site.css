@@ -63,10 +63,16 @@ html {
   height:30px;
   width:30px;  
 }
+.listhovera {
+    width: auto;
+    height: 50px;
+    transition: height 1s;
+}
 .listhovera:hover
 {
     height:70px
 }
+
 #myBtn {
     display: none; /* Hidden by default */
     position: fixed; /* Fixed/sticky position */
