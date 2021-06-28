@@ -115,13 +115,18 @@ namespace MB.Taxi.Web.Controllers
                 return NotFound();
             }
 
-            var bookingVM = _mapper.Map<Booking, BookingVM>(booking);
+            var bookingVM = _mapper.Map<Booking, BookingCreateEditVM>(booking);
+
+            bookingVM.GetPassangersList = await _lookUpService.GetPassangersList();
+            bookingVM.GetDriverList = await _lookUpService.GetDriversList();
+            bookingVM.GetCarList = await _lookUpService.GetCarsList();
+            bookingVM.PaymentDate = DateTime.Now;
 
             return View(bookingVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, BookingVM bookingVM)
+        public async Task<IActionResult> Edit(int id, BookingCreateEditVM bookingVM)
         {
             if (id != bookingVM.Id)
             {
@@ -132,7 +137,14 @@ namespace MB.Taxi.Web.Controllers
             {
                 try
                 {
-                    var booking = _mapper.Map<BookingVM,Booking>(bookingVM);
+                    var booking = _mapper.Map<BookingCreateEditVM, Booking>(bookingVM);
+
+
+                    var driver = await _context.Drivers.FindAsync(bookingVM.DriverIds);
+                    booking.Driver = driver;
+
+                    var car = await _context.Cars.FindAsync(bookingVM.CarIds);
+                    booking.Car = car;
 
                     _context.Update(booking);
                     await _context.SaveChangesAsync();
@@ -150,6 +162,9 @@ namespace MB.Taxi.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            bookingVM.GetPassangersList = await _lookUpService.GetPassangersList();
+
             return View(bookingVM);
         }
         public async Task<IActionResult> Delete(int? id)

@@ -50,7 +50,14 @@
                         @Html.DisplayFor(modelItem => item.Price)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.IsPaid)
+                        @if (item.IsPaid == false)
+                        {
+                            <i class="fas fa-times text-danger"></i>
+                        }
+                        else if (item.IsPaid == true)
+                        {
+                            <i class="fas fa-check-circle text-success"></i>
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.PaymentDate)

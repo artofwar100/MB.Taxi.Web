@@ -1,4 +1,4 @@
-﻿@model MB.Taxi.Web.Models.Booking.BookingVM
+﻿@model MB.Taxi.Web.Models.Booking.BookingCreateEditVM
 
 @{
     ViewData["Title"] = "Edit";
@@ -37,6 +37,16 @@
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsPaid" /> @Html.DisplayNameFor(model => model.IsPaid)
                 </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="DriverIds" class="control-label"></label>
+                <select asp-for="DriverIds" asp-items="@Model.GetDriverList" class="form-control"></select>
+                <span asp-validation-for="DriverIds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CarIds" class="control-label"></label>
+                <select asp-for="CarIds" asp-items="@Model.GetCarList" class="form-control"></select>
+                <span asp-validation-for="CarIds" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
