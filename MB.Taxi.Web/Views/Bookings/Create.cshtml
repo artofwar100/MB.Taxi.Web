@@ -3,66 +3,67 @@
 @{
     ViewData["Title"] = "Create";
 }
+<div class="container">
+    <h1>Create</h1>
 
-<h1>Create</h1>
-
-<h4>Booking</h4>
-<hr />
-<div class="row">
-    <div class="col-md-6">
+    <h4>Booking</h4>
+    <hr />
+    <div class="">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="PickUpTime" class="control-label"></label>
-                <input asp-for="PickUpTime" class="form-control" />
-                <span asp-validation-for="PickUpTime" class="text-danger"></span>
+            <div class="col-md-5 d-inline-block">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="PickUpTime" class="control-label"></label>
+                    <input asp-for="PickUpTime" class="form-control" />
+                    <span asp-validation-for="PickUpTime" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FromAddress" class="control-label"></label>
+                    <input asp-for="FromAddress" class="form-control" />
+                    <span asp-validation-for="FromAddress" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ToAddress" class="control-label"></label>
+                    <input asp-for="ToAddress" class="form-control" />
+                    <span asp-validation-for="ToAddress" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price" class="control-label"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsPaid" /> @Html.DisplayNameFor(model => model.IsPaid)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CarIds" class="control-label"></label>
+                    <select asp-for="CarIds" asp-items="@Model.GetCarList" class="form-control"></select>
+                    <span asp-validation-for="CarIds" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DriverIds" class="control-label"></label>
+                    <select asp-for="DriverIds" asp-items="@Model.GetDriverList" class="form-control"></select>
+                    <span asp-validation-for="DriverIds" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+                <div>
+                    <a asp-action="Index">Back to List</a>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="FromAddress" class="control-label"></label>
-                <input asp-for="FromAddress" class="form-control" />
-                <span asp-validation-for="FromAddress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ToAddress" class="control-label"></label>
-                <input asp-for="ToAddress" class="form-control" />
-                <span asp-validation-for="ToAddress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsPaid" /> @Html.DisplayNameFor(model => model.IsPaid)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="PassangerIds" class="control-label"></label>
-                <select multiple asp-for="PassangerIds" asp-items="@Model.GetPassangersList" class="form-control"></select>
-                <span asp-validation-for="PassangerIds" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DriverIds" class="control-label"></label>
-                <select asp-for="DriverIds" asp-items="@Model.GetDriverList" class="form-control"></select>
-                <span asp-validation-for="DriverIds" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CarIds" class="control-label"></label>
-                <select asp-for="CarIds" asp-items="@Model.GetCarList" class="form-control"></select>
-                <span asp-validation-for="CarIds" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="col-md-5 d-inline-block align-top">
+                <div class="form-group">
+                    <label asp-for="PassangerIds" class="control-label"></label>
+                    <select multiple asp-for="PassangerIds" asp-items="@Model.GetPassangersList" class="form-control"></select>
+                    <span asp-validation-for="PassangerIds" class="text-danger"></span>
+                </div>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

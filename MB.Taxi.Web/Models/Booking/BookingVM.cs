@@ -1,4 +1,6 @@
-﻿using MB.Taxi.Web.Models.Passanger;
+﻿using MB.Taxi.Web.Models.Car;
+using MB.Taxi.Web.Models.Driver;
+using MB.Taxi.Web.Models.Passanger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +22,7 @@ namespace MB.Taxi.Web.Models.Booking
         public bool IsPaid { get; set; }
         public DateTime PaymentDate { get; set; }
         public List<PassangerVM> Passangers { get; set; }
+        public DriverVM Driver { get; set; }
+        public CarVM Car { get; set; }
     }
 }

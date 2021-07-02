@@ -16,6 +16,6 @@ namespace MB.Taxi.Web.Models.Car
         public FuelType FuelType { get; set; }
         public CarType CarType { get; set; }
         public List<int> BookingIds { get; set; }
-        public SelectList GetBookingList { get; set; }
+        public SelectList BookingList { get; set; }
     }
 }

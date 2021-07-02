@@ -25,10 +25,21 @@ namespace MB.Taxi.Web.Controllers
             _context = context;
             _mapper = mapper;
             _lookUpService = lookUpService;
-        } 
+        }
         #endregion
 
         #region Public Actions
+        public async Task<IActionResult> BookingPay(int BookingId)
+        {
+            var booking = await _context.Bookings.FindAsync(BookingId);
+
+            booking.IsPaid = true;
+            booking.PaymentDate = DateTime.Now;
+
+            _context.Update(booking);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
         public async Task<IActionResult> Index()
         {
             var booking = await _context
@@ -48,6 +59,9 @@ namespace MB.Taxi.Web.Controllers
 
             var booking = await _context
                                         .Bookings
+                                        .Include(x => x.Passangers)
+                                        .Include(x => x.Car)
+                                        .Include(x => x.Driver)
                                         .Where(x => x.Id == id)
                                         .FirstOrDefaultAsync();
             if (booking == null)
